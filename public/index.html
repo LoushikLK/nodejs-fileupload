@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Document</title>
+    <script src="./index.js" defer type="module"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/axios@1.1.2/dist/axios.min.js"></script>
+
+    <style>
+        svg {
+            width: 114px;
+            height: 114px;
+            margin: 1em;
+        }
+
+        .bg {
+            fill: none;
+            stroke-width: 10px;
+            stroke: #1A2C34;
+        }
+
+        #meter {
+            fill: none;
+            stroke-width: 10px;
+            stroke-linecap: round;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+            stroke-dasharray: 360;
+            stroke: aqua;
+            transition: all ease-in-out 300ms;
+            stroke-dashoffset: 360;
+        }
+    </style>
+
+</head>
+
+<body class="min-h-screen w-full bg-gray-900 flex items-center justify-center  ">
+    <input type="file" name="" id="file" height="0" width="0" class="overflow-hidden h-0 w-0 ">
+    <div id="upload"
+        class="w-fit rounded-md flex flex-col items-center justify-center gap-4 py-4 px-20 cursor-pointer shadow-xl bg-gray-700 ">
+        <img src="./upload.png" height="100px" width="100px" alt="">
+        <h3 class="font-medium tracking-wide text-blue-500 text-lg text-center">
+            Upload file here
+        </h3>
+    </div>
+    <div id="uploading"
+        class="w-fit rounded-md flex flex-col items-center justify-center gap-4 py-4 px-20  shadow-xl bg-gray-700 "
+        style="display: none;">
+
+        <svg>
+            <circle class="bg" cx="57" cy="57" r="52" />
+            <circle id="meter" cx="57" cy="57" r="52" />
+        </svg>
+        <h3 id="uploading-text" class="font-medium tracking-wide text-blue-500 text-lg text-center">
+            Uploading...
+        </h3>
+    </div>
+</body>
+
+</html>
