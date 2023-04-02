@@ -2,16 +2,6 @@ console.log("upload connected");
 
 const videoContainer = document.getElementById("video-container");
 
-const handleClick = async (name) => {
-  try {
-    const response = await axios.get("/upload-data/" + name);
-    console.log(response);
-  } catch (error) {
-    console.log(error);
-    alert(error?.message);
-  }
-};
-
 (async () => {
   try {
     const response = await axios.get("/upload-data");
@@ -20,12 +10,12 @@ const handleClick = async (name) => {
       if (response?.data?.length) {
         videoContainer.innerHTML = response?.data?.map(
           (item) =>
-            `<div class="flex flex-col border col-span-4 border-gray-50/20 cursor-pointer " onclick=handleClick("${item}") >
+            `<a class="col-span-4" href="/video?movie=${item}" ><div class="flex flex-col border w-full border-gray-50/20 cursor-pointer "  >
             <img src="./movie.jpg" alt="" class="h-[15rem] w-full object-cover ">
             <span class="w-full p-4 text-white  text-md font-medium tracking-wide">
                 ${item}
             </span>
-        </div>`
+        </div></a>`
         );
       } else {
         videoContainer.innerText = "No data available";

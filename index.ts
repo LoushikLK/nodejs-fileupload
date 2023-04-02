@@ -1,6 +1,6 @@
 import express, { Express, NextFunction, Request, Response } from "express";
 import fileUpload from "express-fileupload";
-import { createReadStream, createWriteStream, readdir } from "fs";
+import { createReadStream, createWriteStream, readdir, statSync } from "fs";
 import path from "path";
 
 const app: Express = express();
@@ -23,16 +23,33 @@ app.get("/upload-data", async (req, res, next) => {
   }
 });
 app.get("/upload-data/:uploadPath", async (req, res) => {
-  const data = createReadStream(
-    path.join(__dirname, "./upload/" + req?.params?.uploadPath)
-  );
+  const range = req.headers.range;
 
-  data.on("data", (chunk) => {
-    res.write(chunk);
-  });
-  data.on("end", () => {
-    res.end();
-  });
+  const videoSize = statSync(
+    path.join(__dirname, "./upload/" + req?.params?.uploadPath)
+  ).size;
+
+  const CHUNK_SIZE = 10 ** 6;
+
+  const start = Number(range?.replace(/\D/g, ""));
+
+  const end = Math.min(start + CHUNK_SIZE, videoSize - 1);
+
+  const contentLength = end - start + 1;
+
+  const headers = {
+    "Content-Range": `bytes ${start}-${end}/${videoSize}`,
+    "Accept-Ranges": "bytes",
+    "Content-Length": contentLength,
+    // "Content-Type": "video/mp4",
+  };
+
+  res.writeHead(206, headers);
+  const videoStream = createReadStream(
+    path.join(__dirname, "./upload/" + req?.params?.uploadPath),
+    { start, end }
+  );
+  videoStream.pipe(res);
 });
 
 app.get("/", async (req, res) => {
@@ -40,6 +57,9 @@ app.get("/", async (req, res) => {
 });
 app.get("/upload", async (req, res) => {
   res.sendFile(path.join(__dirname, "./public/" + "upload.html"));
+});
+app.get("/video", async (req, res) => {
+  res.sendFile(path.join(__dirname, "./public/" + "video.html"));
 });
 
 app.post("/upload", async (req: any, res) => {
